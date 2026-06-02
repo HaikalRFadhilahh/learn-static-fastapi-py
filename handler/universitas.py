@@ -61,7 +61,7 @@ async def insertUniversitas(data: Annotated[InsertUniversitas,Body()]) -> JSONRe
                     "error" : "Kode Universitas Exist!"
                 }
             )
-    Data.append(data)
+    Data.append(Universitas(**data.model_dump()))
 
     return JSONResponse(
         status_code=200,
@@ -95,14 +95,13 @@ async def updateUniversitas(kodeUniversitas: Annotated[str,Path()],dataUniversit
                 "data" : d.model_dump()
             })
 
-        if i == len(Data) - 1:
-            return JSONResponse(
-                status_code=404,
-                content={
-                    "status" : "error",
-                    "message" : f"Data Universitas with kode {kodeUniversitas} Not Found!"
-                }
-            )
+    return JSONResponse(
+        status_code=404,
+        content={
+            "status" : "error",
+            "message" : f"Data Universitas with kode {kodeUniversitas} Not Found!"
+        }
+    )
 
 async def deleteUniversitas(kodeUniversitas: Annotated[str,Path()]) -> JSONResponse:
     for i,d in enumerate(Data):

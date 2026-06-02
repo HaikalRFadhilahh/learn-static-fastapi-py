@@ -5,7 +5,7 @@ from model.programStudi import ProgramStudi
 
 
 class UpdateUniversitas(BaseModel):
-    model_config:ConfigDict = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid")
 
     kodeUniversitas: str | None = Field(default=None,min_length=3,max_length=10)
     namaUniversitas: str | None= Field(default=None,min_length=3)
@@ -13,7 +13,7 @@ class UpdateUniversitas(BaseModel):
     alamat: str | None = Field(default=None,min_length=3)
 
 class InsertUniversitas(BaseModel):
-    model_config:ConfigDict = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid")
 
     kodeUniversitas: str= Field(min_length=3,max_length=10)
     namaUniversitas: str= Field(min_length=3)

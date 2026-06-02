@@ -4,7 +4,7 @@ from typing import Literal,List
 from .programStudi import ProgramStudi
 
 class Universitas(BaseModel):
-    model_config:ConfigDict = ConfigDict(
+    model_config = ConfigDict(
         validate_assignment=True,
         extra="forbid"
     )

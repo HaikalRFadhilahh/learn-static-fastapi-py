@@ -10,10 +10,10 @@ async def validationErrorHandler(r: Request,error: ValidationError) ->JSONRespon
     print(error.errors())
     for e in error.errors():
         print(len(e["loc"]))
-        dataErr.append(DataValidationError(**{
-            "field" : e["loc"][0] if e["loc"][0] not in ["query","path","body"] or len(e["loc"]) == 1 else e["loc"][1],
-            "err" : e["msg"]
-        }))
+        dataErr.append(DataValidationError(
+            field=".".join([str(x) for x in e["loc"]]),
+            err=e["msg"]
+        ))
     return JSONResponse(
         status_code=400,
         content={
