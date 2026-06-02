@@ -5,6 +5,7 @@ from data.data import Data
 from typing import Annotated,List,Any
 from model.universitas import Universitas
 from dto.universitas import UpdateUniversitas,InsertUniversitas
+from dto.error import DataValidationError
 
 # HANDLER
 async def getUniversitas(q: Annotated[str | None,Query()] = None) -> JSONResponse:
@@ -58,7 +59,9 @@ async def insertUniversitas(data: Annotated[InsertUniversitas,Body()]) -> JSONRe
                 content={
                     "status" : "error",
                     "message" : "Conflict",
-                    "error" : "Kode Universitas Exist!"
+                    "error" : [
+                        DataValidationError(field="kodeUniversitas",err="Kode Universitas is Exist!").model_dump()
+                    ]
                 }
             )
     Data.append(Universitas(**data.model_dump()))
