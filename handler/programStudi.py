@@ -1,6 +1,6 @@
 # LIBRARY
 from typing import Annotated, List
-from fastapi import Query,Path
+from fastapi import Query,Path,Body
 from model.programStudi import ProgramStudi
 from fastapi.responses import JSONResponse
 from data.data import Data
@@ -39,3 +39,31 @@ def getProgramStudiUniversitas(kodeUniversitas: Annotated[str,Path()],q: Annotat
         }
     )
     
+def insertProgramStudi(kodeUniversitas: Annotated[str,Path()],data: Annotated[ProgramStudi | List[ProgramStudi],Body()]) -> JSONResponse:
+    if isinstance(data,ProgramStudi):
+        return JSONResponse(content={})
+    else:
+        return JSONResponse(content={})
+
+
+def deleteProgramStudi(kodeUniversitas: Annotated[str,Path()],kodeProgramStudi: Annotated[str,Path()]) -> JSONResponse:
+    for i,d in enumerate(Data):
+        if d.kodeUniversitas.lower() == kodeUniversitas.lower():
+            if d.programStudi is not None:
+                for ps in d.programStudi:
+                    if ps.kodeProgramStudi.lower() == kodeProgramStudi.lower():
+                        d.programStudi.remove(ps)
+                        return JSONResponse( 
+                            status_code=200,
+                            content={
+                                "status" : "success",
+                                "message" : f"Data Program Studi with Kode Universitas {kodeUniversitas} and Kode Program Studi {kodeProgramStudi} success Deleted!"
+                            }
+                        )
+    return JSONResponse(
+        status_code=404,
+        content={
+            "status" : "error",
+            "message" : f"Data Program Studi with Kode {kodeProgramStudi} in Kode Universitas {kodeUniversitas} Not Found!"
+        }
+    )
