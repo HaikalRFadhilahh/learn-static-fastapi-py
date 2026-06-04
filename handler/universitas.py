@@ -1,11 +1,12 @@
 # LIBRARY
 from fastapi.responses import JSONResponse
-from fastapi import Query,Path,Body
+from fastapi import Query,Path,Body,status
 from data.data import Data
 from typing import Annotated,List,Any
 from model.universitas import Universitas
 from dto.universitas import UpdateUniversitas,InsertUniversitas
 from dto.error import DataValidationError
+
 
 # HANDLER
 async def getUniversitas(q: Annotated[str | None,Query()] = None) -> JSONResponse:
@@ -16,7 +17,7 @@ async def getUniversitas(q: Annotated[str | None,Query()] = None) -> JSONRespons
                 filterData.append(d)
         
         return JSONResponse(
-            status_code=200,
+            status_code=status.HTTP_200_OK,
             content={
                 "status" : "success",
                 "message" : "Data Universitas",
@@ -24,7 +25,7 @@ async def getUniversitas(q: Annotated[str | None,Query()] = None) -> JSONRespons
             }
         )
     
-    return JSONResponse(status_code=200,
+    return JSONResponse(status_code=status.HTTP_200_OK,
             content={
                 "status" : "success",
                 "message" : "Data Universitas",
@@ -35,7 +36,7 @@ async def getDetailUniversitas(kodeUniversitas: Annotated[str,Path(min_length=3,
     for d in Data:
         if kodeUniversitas.lower() == d.kodeUniversitas.lower():
             return JSONResponse(
-                status_code=200,
+                status_code=status.HTTP_200_OK,
                 content={
                     "status" : "success",
                     "message" : "Data Detail Universitas",
@@ -44,7 +45,7 @@ async def getDetailUniversitas(kodeUniversitas: Annotated[str,Path(min_length=3,
             )
 
     return JSONResponse(
-        status_code=404,
+        status_code=status.HTTP_404_NOT_FOUND,
         content={
             "status" : "error",
             "message" : "Data Universitas Not Found"
@@ -55,7 +56,7 @@ async def insertUniversitas(data: Annotated[InsertUniversitas,Body()]) -> JSONRe
     for d in Data:
         if d.kodeUniversitas.lower() == data.kodeUniversitas.lower():
             return JSONResponse(
-                status_code=409,
+                status_code=status.HTTP_409_CONFLICT,
                 content={
                     "status" : "error",
                     "message" : "Conflict",
@@ -67,7 +68,7 @@ async def insertUniversitas(data: Annotated[InsertUniversitas,Body()]) -> JSONRe
     Data.append(Universitas(**data.model_dump()))
 
     return JSONResponse(
-        status_code=200,
+        status_code=status.HTTP_200_OK,
         content={
             "status" : "error",
             "message" : "Success Add Universitas",
@@ -86,20 +87,19 @@ async def updateUniversitas(kodeUniversitas: Annotated[str,Path()],dataUniversit
             temp["alamat"] = dataUniversitas.alamat if "alamat" in dataUniversitas.model_fields_set else  d.alamat
             
             validateRequest = Universitas.model_validate(temp)
-            print(validateRequest)
             d.kodeUniversitas = validateRequest.kodeUniversitas
             d.namaUniversitas = validateRequest.namaUniversitas
             d.akreditasi = validateRequest.akreditasi
             d.alamat = validateRequest.alamat
 
-            return JSONResponse(status_code=200,content={
+            return JSONResponse(status_code=status.HTTP_200_OK,content={
                 "status" : "success",
                 "message" : f"Data with kode {kodeUniversitas} success Updated!",
                 "data" : d.model_dump()
             })
 
     return JSONResponse(
-        status_code=404,
+        status_code=status.HTTP_404_NOT_FOUND,
         content={
             "status" : "error",
             "message" : f"Data Universitas with kode {kodeUniversitas} Not Found!"
@@ -120,7 +120,7 @@ async def deleteUniversitas(kodeUniversitas: Annotated[str,Path()]) -> JSONRespo
         
 
     return JSONResponse(
-        status_code=200,
+        status_code=status.HTTP_200_OK,
         content={
             "status" : "success",
             "Message" : f"Data with Kode Universitas {kodeUniversitas} Success Deleted!"

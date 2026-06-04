@@ -1,5 +1,4 @@
 # LIBRARY
-from data.data import Data
 from typing import List
 from dto.error import DataValidationError
 

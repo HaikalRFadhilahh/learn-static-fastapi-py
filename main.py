@@ -1,5 +1,5 @@
 # LIBRARY
-from fastapi import FastAPI
+from fastapi import FastAPI,status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response
 from routes.universitas import universitasRouter
@@ -19,7 +19,7 @@ app.include_router(programStudiRouter)
 def root() -> Response:
     return Response(
         content="Application Programming Interface build with FastAPI",
-        status_code=200,
+        status_code=status.HTTP_200_OK,
         headers={
             "Content-Type" : "text/plain"
         }

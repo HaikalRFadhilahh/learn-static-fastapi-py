@@ -1,6 +1,6 @@
 # LIBRARY
 from fastapi.responses import JSONResponse
-from fastapi import Request
+from fastapi import Request,status
 from pydantic import ValidationError
 from dto.error import DataValidationError
 from typing import List
@@ -15,7 +15,7 @@ async def validationErrorHandler(r: Request,error: ValidationError) ->JSONRespon
             err=e["msg"]
         ))
     return JSONResponse(
-        status_code=400,
+        status_code=status.HTTP_400_BAD_REQUEST,
         content={
             "status" : "error",
             "message" : "Invalid Request",
