@@ -6,10 +6,11 @@ from dto.error import DataValidationError
 # Helper
 def checkKodeProgramStudi(data: str | List[str],kodeProgramStudi: list[str]) -> tuple[List[DataValidationError],bool]:
     lowerKodeProgramStudi: List[str] = [x.lower() for x in kodeProgramStudi]
-    if isinstance(data,str):
-        return [] if data.lower() in lowerKodeProgramStudi else [DataValidationError(field="body.kodeProgramStudi",err="Kode Program Studi is Exist")],data.lower() in lowerKodeProgramStudi
+    if isinstance(data,str):       
+        return [DataValidationError(field="body.kodeProgramStudi",err="Kode Program Studi is Exist")] if data.lower() in lowerKodeProgramStudi else [], data.lower() in lowerKodeProgramStudi
     else:
         rtnErr:List[DataValidationError] = []
+        print(data)
         for i,d in enumerate(data):
             if d.lower() in lowerKodeProgramStudi:
                 rtnErr.append(DataValidationError(field=f"body.{i}.kodeProgramStudi",err="Kode Program Studi is Exist"))

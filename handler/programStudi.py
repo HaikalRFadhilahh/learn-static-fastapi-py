@@ -2,9 +2,10 @@
 from typing import Annotated, List
 from fastapi import Query,Path,Body
 from model.programStudi import ProgramStudi
+from model.universitas import Universitas
 from fastapi.responses import JSONResponse
 from data.data import Data
-
+from helper.checkKode import checkKodeProgramStudi
 
 # HANDLER
 def getProgramStudi(q: Annotated[str | None,Query()] = None) -> JSONResponse:
@@ -40,10 +41,58 @@ def getProgramStudiUniversitas(kodeUniversitas: Annotated[str,Path()],q: Annotat
     )
     
 def insertProgramStudi(kodeUniversitas: Annotated[str,Path()],data: Annotated[ProgramStudi | List[ProgramStudi],Body()]) -> JSONResponse:
+    dataUniversitas: Universitas | None = None
+    for d in Data:
+        if d.kodeUniversitas.lower() == kodeUniversitas.lower():
+            dataUniversitas = d 
+            break
+
+    if dataUniversitas is None:
+        return JSONResponse(
+            status_code=404,
+            content={"status" : "error","message" : f"Kode Universitas {kodeUniversitas} Not Found!"}
+        )
+    dkps: List[ProgramStudi] = d.programStudi if d.programStudi is not None else [] 
+    dataKodeProgramStudi:List[str] = [ps.kodeProgramStudi for ps in dkps]
     if isinstance(data,ProgramStudi):
-        return JSONResponse(content={})
+        dataErr, kodeIsExist = checkKodeProgramStudi(data.kodeProgramStudi,dataKodeProgramStudi)
+        if kodeIsExist:
+            return JSONResponse(
+                status_code=409,
+                content={
+                    "status" : "error",
+                    "message" : "Conflict Data kodeProgramStudi",
+                    "error" : [x.model_dump() for x in dataErr]
+                }
+            )
+        else:
+            d.programStudi = d.programStudi if d.programStudi is not None else []
+            d.programStudi.append(data)
+            return JSONResponse(status_code=200,content={
+                "status" : "success",
+                "message" : f"Insert Data Program Studi in Universitas with Kode Universitas {kodeUniversitas}",
+                "data" : data.model_dump()
+            })
     else:
-        return JSONResponse(content={})
+        dataErr, kodeIsExist = checkKodeProgramStudi([x.kodeProgramStudi for x in data],dataKodeProgramStudi)
+        if kodeIsExist:
+            return JSONResponse(
+                status_code=409,
+                content={
+                    "status" : "error",
+                    "message" : "Conflict Data kodeProgramStudi",
+                    "error" : [x.model_dump() for x in dataErr]
+                }
+            )
+        else:
+            d.programStudi = d.programStudi if d.programStudi is not None else []
+            for ps in data:
+                d.programStudi.append(ps)
+            return JSONResponse(status_code=200,content={
+                "status" : "success",
+                "message" : f"Insert Data Program Studi in Universitas with Kode Universitas {kodeUniversitas}",
+                "data" : [x.model_dump() for x in data]
+            })
 
 
 def deleteProgramStudi(kodeUniversitas: Annotated[str,Path()],kodeProgramStudi: Annotated[str,Path()]) -> JSONResponse:
