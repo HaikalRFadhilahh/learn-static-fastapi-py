@@ -4,6 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response
 from routes.universitas import universitasRouter
 from routes.programStudi import programStudiRouter
+from routes.mahasiswa import mahasiswaRouter
 from pydantic import ValidationError
 from error.validationError import validationErrorHandler
 
@@ -13,6 +14,7 @@ app = FastAPI()
 # INCLUDE EXTERNAL ROUTER
 app.include_router(universitasRouter)
 app.include_router(programStudiRouter)
+app.include_router(mahasiswaRouter)
 
 # ROOT ENDPOINT
 @app.get("/")
