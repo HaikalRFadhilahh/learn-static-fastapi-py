@@ -1,5 +1,6 @@
 from model.universitas import Universitas
 from model.programStudi import ProgramStudi
+from model.mahasiswa import Mahasiswa
 from typing import List
 
 Data: List[Universitas] = [
@@ -49,4 +50,17 @@ Data: List[Universitas] = [
             )
         ]
     )
+]
+
+DataMahasiswa: List[Mahasiswa] = [
+    Mahasiswa(npm="21.11.3910",
+              namaMahasiswa="Haikal Raditya Fadhilah",
+              angkatan=2021,
+              domisili="Yogyakarta",
+              universitas=Data[0]),
+    Mahasiswa(npm="21.11.391x",
+              namaMahasiswa="Fadli",
+              angkatan=2021,
+              domisili="Yogyakarta",
+              universitas=Data[0])
 ]
