@@ -7,9 +7,14 @@ from routes.programStudi import programStudiRouter
 from routes.mahasiswa import mahasiswaRouter
 from pydantic import ValidationError
 from error.validationError import validationErrorHandler
+from fastapi.staticfiles import StaticFiles
+from middleware.checkAuthorization import checkAuthorization
 
 # INIT
 app = FastAPI()
+
+# Middleware
+app.middleware("http")(checkAuthorization)
 
 # INCLUDE EXTERNAL ROUTER
 app.include_router(universitasRouter)
@@ -26,6 +31,9 @@ def root() -> Response:
             "Content-Type" : "text/plain"
         }
     )
+    
+# STATIC Endpoint
+app.mount("/static",StaticFiles(directory="public"))    
     
 # ERROR HANDLER
 app.exception_handler(ValidationError)(validationErrorHandler)
