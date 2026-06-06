@@ -4,3 +4,4 @@ debug.py
 */__pycache__
 public
 .env
+.env.example
